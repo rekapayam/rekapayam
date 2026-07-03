@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#C1542C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Buku Rekap Anak Ayam</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #F7F1E3;
+    color: #3A2E22;
+    font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .font-display { font-family: 'Fraunces', Georgia, serif; }
+  .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px 40px; }
+
+  header { border-bottom: 1px solid #E3D5B8; padding: 24px 0 18px; }
+  .h-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  .h-left { display: flex; align-items: center; gap: 12px; }
+  .h-icon {
+    width: 36px; height: 36px; border-radius: 50%; background: #C1542C;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-size: 18px;
+  }
+  h1 { font-size: 22px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .sub { font-size: 13.5px; color: #7A6A52; margin: 4px 0 0; padding-left: 48px; }
+  .icon-btn {
+    appearance: none; border: none; background: #FFFDF7; border: 1px solid #D9CBB0;
+    border-radius: 8px; padding: 7px 10px; font-size: 13px; cursor: pointer; color: #7A6A52;
+    font-family: inherit; display: flex; align-items: center; gap: 5px; white-space: nowrap;
+  }
+  .icon-btn:active { background: #F0E6D2; }
+
+  .err { background: #FBE3DA; color: #92301A; border-radius: 10px; padding: 10px 14px; font-size: 14px; margin: 16px 0 0; }
+  .ok-banner { background: #EBF0E3; color: #4C6741; border-radius: 10px; padding: 10px 14px; font-size: 13px; margin: 16px 0 0; }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  @media (min-width: 520px) { .cards { grid-template-columns: 1fr 1fr 1fr 1fr; } }
+  .card { background: #FFFDF7; border: 1px solid #E3D5B8; border-radius: 12px; padding: 14px; }
+  .card .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; color: #7A6A52; margin-bottom: 6px; }
+  .card .val { font-size: 17px; font-weight: 600; word-break: break-word; }
+
+  .balance { border-radius: 12px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 22px; }
+  .balance .lab { font-size: 14px; font-weight: 500; }
+  .balance .amt { font-size: 19px; font-weight: 700; }
+
+  .tabs { display: flex; gap: 2px; border-bottom: 1px solid #E3D5B8; margin-bottom: 18px; overflow-x: auto; }
+  .tab-btn {
+    appearance: none; background: none; border: none; cursor: pointer;
+    padding: 10px 14px; font-size: 14px; font-weight: 500; color: #7A6A52;
+    border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap;
+    font-family: inherit;
+  }
+  .tab-btn.active { color: #C1542C; border-bottom-color: #C1542C; }
+
+  form.entry { background: #FFFDF7; border: 1px solid #E3D5B8; border-radius: 12px; padding: 16px; margin-bottom: 18px; display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+  @media (min-width: 600px) { form.entry { grid-template-columns: repeat(5, 1fr); align-items: end; } }
+  form.entry label { display: block; font-size: 12px; font-weight: 500; color: #7A6A52; margin-bottom: 4px; }
+  form.entry input, form.entry select {
+    width: 100%; background: #FFFDF7; border: 1px solid #D9CBB0; border-radius: 8px;
+    padding: 9px 10px; font-size: 14px; color: #3A2E22; font-family: inherit;
+  }
+  form.entry input:focus, form.entry select:focus { outline: 2px solid #C1542C; outline-offset: 1px; }
+  .btn-add {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    border: none; border-radius: 8px; padding: 9px 12px; font-size: 14px; font-weight: 500;
+    color: white; cursor: pointer; font-family: inherit;
+  }
+  .btn-add:disabled { opacity: 0.6; }
+
+  .cat-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+  .cat-card { background: #FFFDF7; border: 1px solid #E3D5B8; border-radius: 12px; padding: 14px; }
+  .cat-card .lbl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; color: #7A6A52; margin-bottom: 6px; }
+  .cat-card .rp { font-size: 16px; font-weight: 600; color: #5B7B4F; }
+  .cat-card .kg { font-size: 12px; color: #7A6A52; margin-top: 2px; }
+
+  .rekap-toggle { display: inline-flex; gap: 4px; background: #F0E6D2; border-radius: 9px; padding: 3px; margin-bottom: 14px; }
+  .rekap-toggle-btn {
+    appearance: none; border: none; background: transparent; cursor: pointer;
+    padding: 7px 14px; font-size: 13px; font-weight: 500; color: #7A6A52;
+    border-radius: 7px; font-family: inherit;
+  }
+  .rekap-toggle-btn.active { background: #FFFDF7; color: #C1542C; box-shadow: 0 1px 2px rgba(58,46,34,0.12); }
+
+  .rekap-result { border-radius: 14px; padding: 18px; margin-bottom: 16px; border: 1px solid #E3D5B8; background: #FFFDF7; }
+  .rekap-result-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .rekap-result-label { font-size: 12.5px; font-weight: 600; color: #7A6A52; text-transform: uppercase; letter-spacing: 0.03em; }
+  .rekap-period-select {
+    background: #F0E6D2; border: 1px solid #D9CBB0; border-radius: 8px; padding: 7px 10px;
+    font-size: 13.5px; font-family: inherit; color: #3A2E22; cursor: pointer;
+  }
+  .rekap-result-status { font-size: 13px; font-weight: 700; letter-spacing: 0.03em; margin-bottom: 2px; }
+  .rekap-result-status.pos { color: #4C6741; }
+  .rekap-result-status.neg { color: #92301A; }
+  .rekap-result-amt { font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+  .rekap-result-amt.pos { color: #4C6741; }
+  .rekap-result-amt.neg { color: #92301A; }
+  .rekap-result-detail { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13.5px; color: #7A6A52; }
+  .rekap-result-detail b { color: #3A2E22; }
+  .rekap-detail-label { font-size: 12.5px; font-weight: 600; color: #7A6A52; text-transform: uppercase; letter-spacing: 0.03em; margin: 4px 0 8px; }
+
+  .table-wrap { border: 1px solid #E3D5B8; border-radius: 12px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 480px; }
+  thead tr { background: #F0E6D2; color: #7A6A52; }
+  th { text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; padding: 10px 12px; }
+  th.r, td.r { text-align: right; }
+  td { padding: 10px 12px; border-top: 1px solid #E3D5B8; background: #FFFDF7; }
+  tfoot td { background: #F0E6D2; font-weight: 600; border-top: 1px solid #E3D5B8; }
+  .del-btn { background: none; border: none; cursor: pointer; opacity: 0.5; font-size: 14px; padding: 2px; }
+  .del-btn:hover { opacity: 1; }
+
+  .empty { border: 1px dashed #D9CBB0; background: #FFFDF7; border-radius: 12px; padding: 32px; text-align: center; font-size: 14px; color: #7A6A52; }
+  .loading { text-align: center; padding: 40px 0; color: #7A6A52; font-size: 14px; }
+
+  /* Setup screen */
+  .setup-screen { max-width: 480px; margin: 60px auto; padding: 0 20px; text-align: center; }
+  .setup-screen h2 { font-size: 20px; margin-bottom: 8px; }
+  .setup-screen p { font-size: 14px; color: #7A6A52; line-height: 1.5; margin-bottom: 18px; }
+  .setup-screen input {
+    width: 100%; padding: 11px 12px; border: 1px solid #D9CBB0; border-radius: 8px;
+    font-size: 14px; margin-bottom: 10px; font-family: inherit; background: #FFFDF7; color: #3A2E22;
+  }
+  .setup-screen button {
+    width: 100%; padding: 11px; border: none; border-radius: 8px; background: #C1542C;
+    color: white; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .setup-screen .err { text-align: left; }
+</style>
+</head>
+<body>
+
+<div id="setup" class="setup-screen" style="display:none;">
+  <div style="font-size:36px; margin-bottom:8px;">🐣</div>
+  <h2 class="font-display">Sambungkan ke Google Sheets</h2>
+  <p>Tempel URL Web App dari Google Apps Script kamu (diakhiri <code>/exec</code>). Cukup sekali per HP — data akan otomatis tersinkron dengan HP lain yang pakai URL yang sama.</p>
+  <input type="text" id="setup-url" placeholder="https://script.google.com/macros/s/xxxx/exec">
+  <button id="setup-save">Simpan & Mulai</button>
+  <div id="setup-err" class="err" style="display:none;"></div>
+</div>
+
+<div id="app" class="wrap" style="display:none;">
+  <header>
+    <div class="h-row">
+      <div class="h-left">
+        <div class="h-icon">🐣</div>
+        <h1 class="font-display">Buku Rekap Anak Ayam</h1>
+      </div>
+      <button class="icon-btn" id="refresh-btn">🔄 Refresh</button>
+    </div>
+    <p class="sub">Tersinkron lewat Google Sheets — bisa diisi dari HP mana saja. <a href="#" id="change-url" style="color:#7A6A52;">Ganti URL</a></p>
+  </header>
+
+  <div id="err" class="err" style="display:none;"></div>
+  <div id="okmsg" class="ok-banner" style="display:none;"></div>
+  <div id="cards" class="cards"></div>
+  <div id="balance" class="balance"></div>
+
+  <div class="tabs">
+    <button class="tab-btn" data-tab="penjualan">🥚 Penjualan</button>
+    <button class="tab-btn" data-tab="pakan">🌾 Pakan</button>
+    <button class="tab-btn" data-tab="rekap">📖 Rekap</button>
+  </div>
+
+  <div id="content"></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var FEED_CATEGORIES = ["Bekatul", "Karak Nasi", "Voer", "Vitamin"];
+  var FEED_UNITS = { "Bekatul": "kg", "Karak Nasi": "kg", "Voer": "kg", "Vitamin": "saset" };
+  function feedUnit(jenis) { return FEED_UNITS[jenis] || "kg"; }
+  var URL_KEY = "rekap-ayam-api-url";
+  var state = { tab: "penjualan", sales: [], feed: [], loading: true, busy: false, rekapView: "bulanan" };
+
+  // ---------- setup screen ----------
+  function getApiUrl() { return localStorage.getItem(URL_KEY) || ""; }
+  function setApiUrl(u) { localStorage.setItem(URL_KEY, u); }
+
+  function showSetup(prefill) {
+    document.getElementById("app").style.display = "none";
+    document.getElementById("setup").style.display = "block";
+    document.getElementById("setup-url").value = prefill || "";
+    document.getElementById("setup-err").style.display = "none";
+  }
+  function showApp() {
+    document.getElementById("setup").style.display = "none";
+    document.getElementById("app").style.display = "block";
+  }
+
+  document.getElementById("setup-save").onclick = function () {
+    var v = document.getElementById("setup-url").value.trim();
+    var errEl = document.getElementById("setup-err");
+    if (!v || v.indexOf("/exec") === -1) {
+      errEl.textContent = "URL harus berupa link Web App Apps Script yang diakhiri /exec";
+      errEl.style.display = "block";
+      return;
+    }
+    setApiUrl(v);
+    showApp();
+    fetchAll();
+  };
+
+  document.getElementById("change-url").onclick = function (e) {
+    e.preventDefault();
+    showSetup(getApiUrl());
+  };
+
+  document.getElementById("refresh-btn").onclick = function () { fetchAll(); };
+
+  // ---------- networking ----------
+  function fetchAll() {
+    var apiUrl = getApiUrl();
+    if (!apiUrl) { showSetup(); return; }
+    state.loading = true;
+    renderAll();
+    fetch(apiUrl + "?action=list")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.ok) throw new Error(data.error || "Gagal memuat data");
+        state.sales = data.sales || [];
+        state.feed = data.feed || [];
+        state.sales.sort(function (a, b) { return a.tanggal < b.tanggal ? 1 : -1; });
+        state.feed.sort(function (a, b) { return a.tanggal < b.tanggal ? 1 : -1; });
+        showError("");
+        state.loading = false;
+        renderAll();
+      })
+      .catch(function (e) {
+        state.loading = false;
+        showError("Gagal menyambung ke Google Sheets. Cek koneksi internet atau URL-nya. (" + e.message + ")");
+        renderAll();
+      });
+  }
+
+  function postAction(body) {
+    var apiUrl = getApiUrl();
+    if (!apiUrl) { showSetup(); return Promise.reject(new Error("URL belum diatur")); }
+    state.busy = true;
+    return fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(body)
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        state.busy = false;
+        if (!data.ok) throw new Error(data.error || "Gagal menyimpan");
+        state.sales = data.sales || [];
+        state.feed = data.feed || [];
+        state.sales.sort(function (a, b) { return a.tanggal < b.tanggal ? 1 : -1; });
+        state.feed.sort(function (a, b) { return a.tanggal < b.tanggal ? 1 : -1; });
+        showError("");
+        return data;
+      })
+      .catch(function (e) {
+        state.busy = false;
+        showError("Gagal menyimpan ke Google Sheets. (" + e.message + ")");
+        throw e;
+      });
+  }
+
+  function showError(msg) {
+    var el = document.getElementById("err");
+    if (!msg) { el.style.display = "none"; el.textContent = ""; return; }
+    el.style.display = "block"; el.textContent = msg;
+  }
+
+  // ---------- helpers ----------
+  function fmtRp(n) {
+    n = Number(n) || 0;
+    return "Rp " + n.toLocaleString("id-ID", { maximumFractionDigits: 0 });
+  }
+  function fmtDate(d) {
+    if (!d) return "-";
+    var dt = new Date(d + "T00:00:00");
+    if (isNaN(dt.getTime())) return d;
+    return dt.toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" });
+  }
+  function todayStr() { return new Date().toISOString().slice(0, 10); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function computeTotals() {
+    var totalEkor = state.sales.reduce(function (a, s) { return a + s.jumlah; }, 0);
+    var totalJual = state.sales.reduce(function (a, s) { return a + s.total; }, 0);
+    var totalPakanKg = state.feed.reduce(function (a, f) { return a + f.jumlah; }, 0);
+    var totalPakanRp = state.feed.reduce(function (a, f) { return a + f.total; }, 0);
+    var catKg = {};
+    FEED_CATEGORIES.forEach(function (cat) {
+      catKg[cat] = state.feed.filter(function (f) { return f.jenis === cat; }).reduce(function (a, f) { return a + f.jumlah; }, 0);
+    });
+    return {
+      totalEkor: totalEkor, totalJual: totalJual, totalPakanKg: totalPakanKg, totalPakanRp: totalPakanRp,
+      catKg: catKg, laba: totalJual - totalPakanRp
+    };
+  }
+
+  // ---------- render ----------
+  function renderSummary() {
+    var t = computeTotals();
+    document.getElementById("cards").innerHTML =
+      card("🥚", "Ekor terjual", t.totalEkor.toLocaleString("id-ID")) +
+      card("📈", "Total penjualan", fmtRp(t.totalJual)) +
+      card("🌾", "Pakan terpakai", t.totalPakanKg.toLocaleString("id-ID") + " kg") +
+      card("📉", "Pengeluaran pakan", fmtRp(t.totalPakanRp));
+
+    var bal = document.getElementById("balance");
+    var positive = t.laba >= 0;
+    bal.style.background = positive ? "#EBF0E3" : "#FBE3DA";
+    bal.innerHTML =
+      '<span class="lab">⚖️ Selisih penjualan dan pakan</span>' +
+      '<span class="amt mono" style="color:' + (positive ? "#4C6741" : "#92301A") + '">' +
+      (positive ? "+" : "") + fmtRp(t.laba) + "</span>";
+  }
+  function card(icon, label, val) {
+    return '<div class="card"><div class="lbl">' + icon + ' ' + esc(label) + '</div><div class="val mono">' + esc(val) + "</div></div>";
+  }
+
+  function renderTabs() {
+    document.querySelectorAll(".tab-btn").forEach(function (btn) {
+      btn.classList.toggle("active", btn.dataset.tab === state.tab);
+      btn.onclick = function () { state.tab = btn.dataset.tab; renderTabs(); renderContent(); };
+    });
+  }
+
+  function renderContent() {
+    var c = document.getElementById("content");
+    if (state.loading) { c.innerHTML = '<div class="loading">⏳ Memuat data dari Google Sheets...</div>'; return; }
+    if (state.tab === "penjualan") c.innerHTML = salesTabHTML();
+    else if (state.tab === "pakan") c.innerHTML = feedTabHTML();
+    else c.innerHTML = rekapTabHTML();
+    wireEvents();
+  }
+
+  function salesTabHTML() {
+    var rows = state.sales.map(function (s) {
+      return "<tr><td>" + fmtDate(s.tanggal) + "</td>" +
+        '<td class="mono">' + s.jumlah + "</td>" +
+        '<td class="mono">' + fmtRp(s.harga) + "</td>" +
+        "<td>" + esc(s.pembeli || "-") + "</td>" +
+        '<td class="r mono" style="color:#C1542C;font-weight:600">' + fmtRp(s.total) + "</td>" +
+        '<td class="r"><button class="del-btn" data-del-sale="' + esc(s.id) + '">🗑</button></td></tr>';
+    }).join("");
+
+    return (
+      '<form class="entry" id="sale-form">' +
+        '<div><label>Tanggal</label><input type="date" name="tanggal" value="' + todayStr() + '" required></div>' +
+        '<div><label>Jumlah (ekor)</label><input type="number" min="1" name="jumlah" placeholder="0" required></div>' +
+        '<div><label>Harga / ekor</label><input type="number" min="0" name="harga" placeholder="0" required></div>' +
+        '<div><label>Pembeli (opsional)</label><input type="text" name="pembeli" placeholder="Nama pembeli"></div>' +
+        '<button type="submit" class="btn-add" style="background:#C1542C"' + (state.busy ? " disabled" : "") + '>+ Tambah</button>' +
+      "</form>" +
+      (state.sales.length === 0
+        ? '<div class="empty">Belum ada penjualan. Tambahkan transaksi pertama di atas.</div>'
+        : '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Ekor</th><th>Harga/ekor</th><th>Pembeli</th><th class="r">Total</th><th></th></tr></thead><tbody>' + rows + "</tbody></table></div>")
+    );
+  }
+
+  function feedTabHTML() {
+    var catCards = FEED_CATEGORIES.map(function (cat) {
+      var items = state.feed.filter(function (f) { return f.jenis === cat; });
+      var qty = items.reduce(function (a, f) { return a + f.jumlah; }, 0);
+      var rp = items.reduce(function (a, f) { return a + f.total; }, 0);
+      var unit = feedUnit(cat);
+      return '<div class="cat-card"><div class="lbl">' + esc(cat) + '</div><div class="rp mono">' + fmtRp(rp) + '</div><div class="kg mono">' + qty.toLocaleString("id-ID") + " " + unit + "</div></div>";
+    }).join("");
+
+    var rows = state.feed.map(function (f) {
+      var unit = feedUnit(f.jenis);
+      return "<tr><td>" + fmtDate(f.tanggal) + "</td>" +
+        "<td>" + esc(f.jenis) + "</td>" +
+        '<td class="mono">' + f.jumlah + " " + unit + "</td>" +
+        '<td class="mono">' + fmtRp(f.harga) + "/" + unit + "</td>" +
+        '<td class="r mono" style="color:#5B7B4F;font-weight:600">' + fmtRp(f.total) + "</td>" +
+        '<td class="r"><button class="del-btn" data-del-feed="' + esc(f.id) + '">🗑</button></td></tr>';
+    }).join("");
+
+    var options = FEED_CATEGORIES.map(function (c) { return '<option value="' + esc(c) + '">' + esc(c) + "</option>"; }).join("");
+
+    return (
+      '<form class="entry" id="feed-form">' +
+        '<div><label>Tanggal</label><input type="date" name="tanggal" value="' + todayStr() + '" required></div>' +
+        '<div><label>Kategori pakan</label><select name="jenis" id="feed-jenis" required onchange="updateFeedUnit(this.value)">' + options + "</select></div>" +
+        '<div><label id="feed-qty-label">Jumlah (kg)</label><input type="number" id="feed-qty" min="0" step="0.1" name="jumlah" placeholder="0" required></div>' +
+        '<div><label id="feed-harga-label">Harga / kg</label><input type="number" min="0" name="harga" placeholder="0" required></div>' +
+        '<button type="submit" class="btn-add" style="background:#5B7B4F"' + (state.busy ? " disabled" : "") + '>+ Tambah</button>' +
+      "</form>" +
+      (state.feed.length ? '<div class="cat-cards">' + catCards + "</div>" : "") +
+      (state.feed.length === 0
+        ? '<div class="empty">Belum ada pengeluaran pakan. Tambahkan catatan pertama di atas.</div>'
+        : '<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Kategori</th><th>Jumlah</th><th>Harga/satuan</th><th class="r">Total</th><th></th></tr></thead><tbody>' + rows + "</tbody></table></div>")
+    );
+  }
+
+  var QUARTER_MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+
+  function periodKey(dateStr, view) {
+    var parts = String(dateStr).slice(0, 10).split("-");
+    var y = parts[0], m = Number(parts[1]);
+    if (view === "kuartal") {
+      var q = Math.floor((m - 1) / 3) + 1;
+      return y + "-Q" + q;
+    }
+    return y + "-" + parts[1];
+  }
+
+  function periodLabel(key, view) {
+    if (view === "kuartal") {
+      var p = key.split("-Q");
+      var y = p[0], q = Number(p[1]);
+      var startM = (q - 1) * 3;
+      var endM = startM + 2;
+      return "Triwulan " + q + " " + y + " (" + QUARTER_MONTH_NAMES[startM] + "\u2013" + QUARTER_MONTH_NAMES[endM] + ")";
+    }
+    var parts = key.split("-");
+    var d = new Date(Number(parts[0]), Number(parts[1]) - 1, 1);
+    return d.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
+  }
+
+  function rekapTabHTML() {
+    if (state.sales.length === 0 && state.feed.length === 0) {
+      return '<div class="empty">Belum ada data. Isi tab Penjualan dan Pakan untuk melihat rekap di sini.</div>';
+    }
+    var view = state.rekapView === "kuartal" ? "kuartal" : "bulanan";
+    var map = {};
+    function addTo(key, field, val) {
+      if (!map[key]) {
+        map[key] = { jual: 0, ekor: 0, pakanRp: 0 };
+        FEED_CATEGORIES.forEach(function (cat) { map[key][cat] = 0; });
+      }
+      map[key][field] += val;
+    }
+    state.sales.forEach(function (s) {
+      var key = periodKey(s.tanggal, view);
+      addTo(key, "jual", s.total);
+      addTo(key, "ekor", s.jumlah);
+    });
+    state.feed.forEach(function (f) {
+      var key = periodKey(f.tanggal, view);
+      addTo(key, "pakanRp", f.total);
+      if (FEED_CATEGORIES.indexOf(f.jenis) !== -1) addTo(key, f.jenis, f.jumlah);
+    });
+    var keys = Object.keys(map).sort().reverse();
+
+    var toggle =
+      '<div class="rekap-toggle">' +
+        '<button type="button" class="rekap-toggle-btn' + (view === "bulanan" ? " active" : "") + '" data-rekap-view="bulanan">Bulanan</button>' +
+        '<button type="button" class="rekap-toggle-btn' + (view === "kuartal" ? " active" : "") + '" data-rekap-view="kuartal">3 Bulanan</button>' +
+      '</div>';
+
+    if (keys.length === 0) {
+      return toggle + '<div class="empty">Belum ada data untuk periode ini.</div>';
+    }
+
+    // pilih periode aktif (default: periode terbaru)
+    if (!state.rekapPeriod || keys.indexOf(state.rekapPeriod) === -1) {
+      state.rekapPeriod = keys[0];
+    }
+    var selKey = state.rekapPeriod;
+    var selV = map[selKey];
+    var selSelisih = selV.jual - selV.pakanRp;
+    var selPositive = selSelisih >= 0;
+
+    var periodOptions = keys.map(function (k) {
+      return '<option value="' + esc(k) + '"' + (k === selKey ? " selected" : "") + '>' + esc(periodLabel(k, view)) + "</option>";
+    }).join("");
+
+    var resultBanner =
+      '<div class="rekap-result">' +
+        '<div class="rekap-result-top">' +
+          '<span class="rekap-result-label">' + (view === "kuartal" ? "\ud83d\udcc6 Hasil per Triwulan" : "\ud83d\udcc6 Hasil per Bulan") + '</span>' +
+          '<select id="rekap-period-select" class="rekap-period-select">' + periodOptions + '</select>' +
+        '</div>' +
+        '<div class="rekap-result-status ' + (selPositive ? "pos" : "neg") + '">' + (selPositive ? "\ud83d\udcc8 UNTUNG" : "\ud83d\udcc9 RUGI") + '</div>' +
+        '<div class="rekap-result-amt ' + (selPositive ? "pos" : "neg") + ' mono">' + (selPositive ? "+" : "\u2212") + fmtRp(Math.abs(selSelisih)) + '</div>' +
+        '<div class="rekap-result-detail">' +
+          '<span>\ud83e\udd5a Penjualan: <b class="mono">' + fmtRp(selV.jual) + '</b></span>' +
+          '<span>\ud83c\udf3e Pakan: <b class="mono">' + fmtRp(selV.pakanRp) + '</b></span>' +
+        '</div>' +
+      '</div>';
+
+    var catHeaders = FEED_CATEGORIES.map(function (cat) { return '<th class="r">' + esc(cat) + ' (' + feedUnit(cat) + ')</th>'; }).join("");
+    var rows = keys.map(function (key) {
+      var v = map[key];
+      var selisih = v.jual - v.pakanRp;
+      var positive = selisih >= 0;
+      var catCols = FEED_CATEGORIES.map(function (cat) {
+        return '<td class="r mono">' + (v[cat] || 0).toLocaleString("id-ID") + "</td>";
+      }).join("");
+      var rowStyle = key === selKey ? " style='background:#FBF0DB'" : "";
+      return "<tr" + rowStyle + "><td style='font-weight:500'>" + esc(periodLabel(key, view)) + "</td>" +
+        '<td class="r mono">' + v.ekor.toLocaleString("id-ID") + "</td>" +
+        '<td class="r mono">' + fmtRp(v.jual) + "</td>" +
+        catCols +
+        '<td class="r mono">' + fmtRp(v.pakanRp) + "</td>" +
+        '<td class="r mono" style="color:' + (positive ? "#4C6741" : "#92301A") + '">' + (positive ? "+" : "") + fmtRp(selisih) + "</td>" +
+        '<td class="r" style="font-weight:600;color:' + (positive ? "#4C6741" : "#92301A") + '">' + (positive ? "Untung" : "Rugi") + "</td></tr>";
+    }).join("");
+
+    var t = computeTotals();
+    var posAll = t.laba >= 0;
+    var catTotals = FEED_CATEGORIES.map(function (cat) {
+      return '<td class="r mono">' + (t.catKg[cat] || 0).toLocaleString("id-ID") + "</td>";
+    }).join("");
+    var foot = "<tr><td>Total</td>" +
+      '<td class="r mono">' + t.totalEkor.toLocaleString("id-ID") + "</td>" +
+      '<td class="r mono">' + fmtRp(t.totalJual) + "</td>" +
+      catTotals +
+      '<td class="r mono">' + fmtRp(t.totalPakanRp) + "</td>" +
+      '<td class="r mono" style="color:' + (posAll ? "#4C6741" : "#92301A") + '">' + (posAll ? "+" : "") + fmtRp(t.laba) + "</td>" +
+      '<td class="r" style="font-weight:600;color:' + (posAll ? "#4C6741" : "#92301A") + '">' + (posAll ? "Untung" : "Rugi") + "</td></tr>";
+
+    return toggle + resultBanner +
+      '<div class="rekap-detail-label">Rincian semua periode</div>' +
+      '<div class="table-wrap"><table><thead><tr><th>' + (view === "kuartal" ? "Triwulan" : "Bulan") + '</th><th class="r">Ekor terjual</th><th class="r">Penjualan</th>' + catHeaders + '<th class="r">Total pakan</th><th class="r">Selisih</th><th class="r">Status</th></tr></thead><tbody>' + rows + "</tbody><tfoot>" + foot + "</tfoot></table></div>";
+  }
+
+  // ---------- events ----------
+  function wireEvents() {
+    var saleForm = document.getElementById("sale-form");
+    if (saleForm) {
+      saleForm.onsubmit = function (e) {
+        e.preventDefault();
+        if (state.busy) return;
+        var fd = new FormData(saleForm);
+        var jumlah = Number(fd.get("jumlah"));
+        var harga = Number(fd.get("harga"));
+        var tanggal = fd.get("tanggal");
+        if (!tanggal || !jumlah || !harga) return;
+        renderContent();
+        postAction({
+          action: "addSale", id: uid(), tanggal: tanggal, jumlah: jumlah, harga: harga,
+          total: jumlah * harga, pembeli: (fd.get("pembeli") || "").trim()
+        }).then(renderAll).catch(renderAll);
+      };
+    }
+    var feedForm = document.getElementById("feed-form");
+    if (feedForm) {
+      feedForm.onsubmit = function (e) {
+        e.preventDefault();
+        if (state.busy) return;
+        var fd = new FormData(feedForm);
+        var jumlah = Number(fd.get("jumlah"));
+        var harga = Number(fd.get("harga"));
+        var tanggal = fd.get("tanggal");
+        var jenis = fd.get("jenis");
+        if (!tanggal || !jenis || !jumlah || !harga) return;
+        renderContent();
+        postAction({
+          action: "addFeed", id: uid(), tanggal: tanggal, jenis: jenis, jumlah: jumlah, harga: harga, total: jumlah * harga
+        }).then(renderAll).catch(renderAll);
+      };
+    }
+    document.querySelectorAll("[data-del-sale]").forEach(function (btn) {
+      btn.onclick = function () {
+        if (state.busy) return;
+        postAction({ action: "deleteSale", id: btn.dataset.delSale }).then(renderAll).catch(renderAll);
+      };
+    });
+    document.querySelectorAll("[data-del-feed]").forEach(function (btn) {
+      btn.onclick = function () {
+        if (state.busy) return;
+        postAction({ action: "deleteFeed", id: btn.dataset.delFeed }).then(renderAll).catch(renderAll);
+      };
+    });
+    document.querySelectorAll("[data-rekap-view]").forEach(function (btn) {
+      btn.onclick = function () {
+        state.rekapView = btn.dataset.rekapView;
+        state.rekapPeriod = null;
+        renderContent();
+      };
+    });
+    var periodSelect = document.getElementById("rekap-period-select");
+    if (periodSelect) {
+      periodSelect.onchange = function () {
+        state.rekapPeriod = periodSelect.value;
+        renderContent();
+      };
+    }
+  }
+
+  function renderAll() {
+    renderSummary();
+    renderTabs();
+    renderContent();
+  }
+
+  // expose globally for inline onchange
+  window.updateFeedUnit = function (jenis) {
+    var unit = feedUnit(jenis);
+    var qtyLabel = document.getElementById("feed-qty-label");
+    var hargaLabel = document.getElementById("feed-harga-label");
+    var qtyInput = document.getElementById("feed-qty");
+    if (qtyLabel) qtyLabel.textContent = "Jumlah (" + unit + ")";
+    if (hargaLabel) hargaLabel.textContent = "Harga / " + unit;
+    if (qtyInput) qtyInput.step = unit === "saset" ? "1" : "0.1";
+  };
+
+  // ---------- boot ----------
+  var apiUrl = getApiUrl();
+  if (!apiUrl) {
+    showSetup();
+  } else {
+    showApp();
+    fetchAll();
+  }
+})();
+</script>
+</body>
+</html>
